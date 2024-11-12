@@ -44,7 +44,7 @@ export default function CartPanel() {
     var date = new Date();
     date.setDate(date.getDate() + 7);
     const [offerDate, setOfferDate] = useState(date);
-var test = 'asdfasfa';
+        var test = 'asdfasfa';
 
 
     useEffect(() => {

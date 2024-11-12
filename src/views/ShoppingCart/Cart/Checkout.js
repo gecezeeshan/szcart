@@ -14,7 +14,7 @@ const Checkout = () => {
     var productLst = [];
 
     const removeClickHandler = (event) => {
-        event.preventDefault();
+        event.preventDefault();       
         dispatch(checkoutActions.RemoveItem(event.target.id));
     }
     useEffect(() => {      
@@ -27,24 +27,35 @@ const Checkout = () => {
 
     var total = 0;
 
-    const GetProducts = () => {
+    const GetProductTotal = () => {
         var _products = productData;
-        var products = checkOutSlice.products;
+        var checkoutProducts = checkOutSlice.products;
 
-        //products = _products.filter(p => products.includes(p.Id.toString()));
+        // Use reduce to count occurrences and create an object
+        const checkOutProductWithCount = checkoutProducts.reduce((acc, product) => {
+            acc[product] = (acc[product] || 0) + 1; // Increment the count if product exists, otherwise set to 1
+            return acc;
+        }, {});
 
-        products.map((pr) => {
-            var pro = _products.filter(p => p.Id.toString() == pr)[0];
-            productLst.push(pro);
-            total += parseFloat( pro.price);
+        const uniqueProductList = Object.entries(checkOutProductWithCount).map(([product, count]) => ({
+            product,
+            count
+        }));
+
+
+        uniqueProductList.map((pr) => {            
+            var pro = _products.filter(p => p.Id.toString() == pr.product)[0];
+        
+            productLst.push({'Product': pro,'Count': pr.count});
+            total += parseFloat( pro.price * pr.count);
 
         });
-
-
-
     }
+   
 
-    GetProducts();
+    GetProductTotal();
+
+
     return (
         <>
 
@@ -60,15 +71,15 @@ const Checkout = () => {
                         {productLst.map((a,index) => {
 
                             return (
-                                <li key={a.Id} className="list-group-item d-flex justify-content-between lh-sm">
+                                <li key={a.Product.Id} className="list-group-item d-flex justify-content-between lh-sm">
                                     <div>
-                                        <h6 className="my-0">{a.name}</h6>
+                                        <h6 className="my-0">{a.Product.name}</h6>
                                         <small className="text-muted">Brief description</small>
                                     </div>
-                                    <span className="text-muted">${a.price}</span>
+                                    <span className="text-muted">${a.Product.price} * {a.Count} </span>
 
                                     <div>
-                                        <Button variant="outline-secondary" onClick={removeClickHandler} id={index}>Remove</Button>
+                                        <Button variant="outline-secondary" onClick={removeClickHandler} id={a.Product.Id}>Remove</Button>
                                     </div>
                                 </li>
 

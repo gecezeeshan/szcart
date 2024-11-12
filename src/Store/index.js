@@ -3,45 +3,49 @@ import { createSlice, configureStore } from '@reduxjs/toolkit';
 
 
 const initialCheckoutState = {
- products : []
+    products: []
 }
 
 const checkOutSlice = createSlice({
- name: 'checkout',
- initialState : initialCheckoutState,
- reducers: {
-    AddItem(state,action) {        
-        state.products.push(action.payload);
-    },
-    RemoveItem(state,action) {
-        state.products.splice(action.payload,1);
+    name: 'checkout',
+    initialState: initialCheckoutState,
+    reducers: {
+        AddItem(state, action) {
+            state.products.push(action.payload);
+        },
+        RemoveItem(state, action) {
+            var index = state.products.indexOf(action.payload);
+            if (index !== -1) {
+                state.products.splice(index, 1);
+            }
+        }
     }
- }
 });
 
 
 
 const initialProfileState = {
-    profile : null
-   }
-   
-   const profileSlice = createSlice({
+    profile: null
+}
+
+const profileSlice = createSlice({
     name: 'profile',
-    initialState : initialProfileState,
+    initialState: initialProfileState,
     reducers: {
-       Login(state,action) {        
-           state.profile = action.payload;
-       },
-       Logout(state) {
-           state.profile= null;
-       }
+        Login(state, action) {
+            state.profile = action.payload;
+        },
+        Logout(state) {
+            state.profile = null;
+        }
     }
-   });
+});
 
 const store = configureStore({
-  reducer: {// counter: counterSlice.reducer, auth: authSlice.reducer,
-      profile:   profileSlice.reducer,
-     checkout : checkOutSlice.reducer },
+    reducer: {// counter: counterSlice.reducer, auth: authSlice.reducer,
+        profile: profileSlice.reducer,
+        checkout: checkOutSlice.reducer
+    },
 });
 
 // export const counterActions = counterSlice.actions;
